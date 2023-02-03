@@ -12,7 +12,7 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 
       return routine;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
@@ -25,7 +25,7 @@ async function getRoutineById(id) {
 
     return routine;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -39,7 +39,7 @@ async function getRoutinesWithoutActivities() {
 
     return rows;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -56,7 +56,7 @@ async function getAllRoutines() {
     
     return routinesWithActs;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -68,7 +68,7 @@ async function getAllPublicRoutines() {
 
     return publicRoutines;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -80,7 +80,7 @@ async function getAllRoutinesByUser({ username }) {
     
     return routinesByUser;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -92,7 +92,7 @@ async function getPublicRoutinesByUser({ username }) {
     
     return publicRoutinesByUser;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -104,7 +104,7 @@ async function getPublicRoutinesByActivity({ id }) {
       const { activities } = routine;
       let containsActivity = false;
       for (let activity of activities) {
-        if (activity.id === id) {
+        if (activity.id === Number(id)) {
           containsActivity = true;
         }
       }
@@ -113,7 +113,7 @@ async function getPublicRoutinesByActivity({ id }) {
 
     return publicRoutinesByActivity;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -136,16 +136,20 @@ async function updateRoutine({ id, ...fields }) {
 
     return routine;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
 async function destroyRoutine(id) {
   try {
+    const routine = await getRoutineById(id);
+
     await client.query(`
     DELETE FROM routine_activities WHERE "routineId"=${ id };
     DELETE FROM routines WHERE id=${ id };
     `)
+
+    return routine;
   } catch (error) {
     console.log(error);
   }

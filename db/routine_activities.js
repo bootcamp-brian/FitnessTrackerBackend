@@ -16,7 +16,7 @@ async function addActivityToRoutine({
 
     return routineActivity;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
@@ -36,7 +36,14 @@ async function getRoutineActivityById(id) {
 async function getRoutineActivitiesByRoutine({ id }) {
   try {
     const { rows } = await client.query(`
-      SELECT acts.id as id, name, description, duration, count, rout_acts.id as "routineActivityId", "routineId"
+      SELECT
+        acts.id as id,
+        name,
+        description,
+        duration,
+        count,
+        rout_acts.id as "routineActivityId",
+        "routineId"
       FROM activities as acts
       JOIN routine_activities as rout_acts ON acts.id=rout_acts."activityId"
       WHERE rout_acts."routineId"=${id};
@@ -67,19 +74,21 @@ async function updateRoutineActivity({ id, ...fields }) {
 
     return routineActivity;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
 async function destroyRoutineActivity(id) {
   try {
+    const { rows: [ routine ] } = await client.query(`
+    SELECT * FROM routine_activities WHERE id=${ id };
+    `);
+   
     await client.query(`
     DELETE FROM routine_activities WHERE id=${ id };
     `);
-    const result = await client.query(`
-    SELECT * FROM routine_activities WHERE id=${ id };
-    `);
-    console.log(result)
+
+    return routine;
   } catch (error) {
     console.log(error);
   }

@@ -13,7 +13,7 @@ async function createActivity({ name, description }) {
 
     return activity;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
@@ -26,7 +26,7 @@ async function getAllActivities() {
 
     return rows;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -39,7 +39,7 @@ async function getActivityById(id) {
 
     return activity;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -52,12 +52,34 @@ async function getActivityByName(name) {
 
     return activity;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
 async function attachActivitiesToRoutines(routines) {
   // select and return an array of all activities
+  try {
+    const { rows: activities } = await client.query(`
+      SELECT activities.*, "routineId"
+      FROM activities
+      JOIN routine_activities ON "activityId"=activities.id;
+    `);
+
+    const routinesWithActs = routines.map(routine => {
+      const routineActivities = [];
+      for (let activity of activities) {
+        if (activity.routineId === routine.id) {
+          routineActivities.push(activity);
+        }
+      }
+      routine.activities = routineActivities;
+      return routine;
+    });
+
+    return routinesWithActs;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 async function updateActivity({ id, ...fields }) {
@@ -82,7 +104,7 @@ async function updateActivity({ id, ...fields }) {
 
     return activity;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 

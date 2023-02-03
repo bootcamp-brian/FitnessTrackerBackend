@@ -25,7 +25,7 @@ async function dropTables() {
     console.log("Finished dropping tables!");
   } catch (error) {
       console.error("Error dropping tables!");
-      throw error;
+      console.log(error);
   }
 }
 
@@ -65,7 +65,7 @@ async function createTables() {
     console.log("Finished building tables!");
   } catch (error) {
       console.error("Error building tables!");
-      throw error;
+      console.log(error);
   }
 }
 
@@ -90,7 +90,7 @@ async function createInitialUsers() {
     console.log("Finished creating users!")
   } catch (error) {
     console.error("Error creating users!")
-    throw error
+    console.log(error)
   }
 }
 async function createInitialActivities() {
@@ -124,7 +124,7 @@ async function createInitialActivities() {
     console.log("Finished creating activities!")
   } catch (error) {
     console.error("Error creating activities!")
-    throw error
+    console.log(error)
   }
 }
 
@@ -244,7 +244,7 @@ async function rebuildDB() {
     await createInitialRoutineActivities()
   } catch (error) {
     console.log("Error during rebuildDB")
-    throw error
+    console.log(error)
   }
 }
 

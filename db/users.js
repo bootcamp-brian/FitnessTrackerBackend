@@ -1,11 +1,11 @@
 const client = require("./client");
-const bcrypt = require('bcrypt')
-const SALT_COUNT = 10;
+const bcrypt = require('bcrypt');
 
 // database functions
 
 // user functions
 async function createUser({ username, password }) {
+  const SALT_COUNT = 10;
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
       const { rows: [ user ] } = await client.query(`
@@ -19,7 +19,7 @@ async function createUser({ username, password }) {
 
       return user;
   } catch (error) {
-      throw error;
+      console.log(error);
   }
 }
 
@@ -33,10 +33,11 @@ async function getUser({ username, password }) {
         delete user.password;
         return user;
       } else {
+        console.log("Incorrect username or password");
         return false;
     }
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -51,7 +52,7 @@ async function getUserById(userId) {
 
     return user;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
@@ -64,7 +65,7 @@ async function getUserByUsername(username) {
     
     return user;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
 
