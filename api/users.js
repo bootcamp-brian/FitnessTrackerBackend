@@ -9,11 +9,9 @@ const { checkAuthorization } = require("./utils");
 
 // POST /api/users/register
 usersRouter.post('/register', async (req, res, next) => {
-    // destructure required user data from request body
     const { username, password } = req.body;
   
     try {
-      // checks to see if the username provided is already in use
       const _user = await getUserByUsername(username);
   
       if (_user) {
@@ -31,10 +29,9 @@ usersRouter.post('/register', async (req, res, next) => {
             message: PasswordTooShortError()
         })
       }
-      // creates new user using provided data
+
       const user = await createUser({ username, password });
   
-      // creates token for newly registered user and sends it
       const token = jwt.sign({ 
         id: user.id, 
         username
@@ -54,7 +51,6 @@ usersRouter.post('/register', async (req, res, next) => {
 
 // POST /api/users/login
 usersRouter.post('/login', async (req, res, next) => {
-    // destructure username & password from request body
     const { username, password } = req.body;
 
     try {

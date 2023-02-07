@@ -1,15 +1,13 @@
 const client = require('./client');
 
-// database functions
 async function createActivity({ name, description }) {
-  // return the new activity
   try {
     const { rows: [ activity ] } = await client.query(`
       INSERT INTO activities(name, description)
       VALUES ($1, $2)
       ON CONFLICT (name) DO NOTHING
       RETURNING *;
-      `, [ name, description ]);
+    `, [ name, description ]);
 
     return activity;
   } catch (error) {
@@ -18,7 +16,6 @@ async function createActivity({ name, description }) {
 }
 
 async function getAllActivities() {
-  // select and return an array of all activities
   try {
     const { rows } = await client.query(`
       SELECT * FROM activities;
@@ -57,10 +54,9 @@ async function getActivityByName(name) {
 }
 
 async function attachActivitiesToRoutines(routines) {
-  // select and return an array of all activities
   try {
     const { rows: activities } = await client.query(`
-      SELECT activities.*, "routineId"
+      SELECT activities.*, "routineId", duration, count, routine_activities.id as "routineActivityId"
       FROM activities
       JOIN routine_activities ON "activityId"=activities.id;
     `);
@@ -83,9 +79,6 @@ async function attachActivitiesToRoutines(routines) {
 }
 
 async function updateActivity({ id, ...fields }) {
-  // don't try to update the id
-  // do update the name and description
-  // return the updated activity
   const setString = Object.keys(fields).map(
       (key, index) => `"${ key }"=$${ index + 1 }`
   ).join(', ');

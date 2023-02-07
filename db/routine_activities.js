@@ -35,21 +35,12 @@ async function getRoutineActivityById(id) {
 
 async function getRoutineActivitiesByRoutine({ id }) {
   try {
-    const { rows } = await client.query(`
-      SELECT
-        acts.id as id,
-        name,
-        description,
-        duration,
-        count,
-        rout_acts.id as "routineActivityId",
-        "routineId"
-      FROM activities as acts
-      JOIN routine_activities as rout_acts ON acts.id=rout_acts."activityId"
-      WHERE rout_acts."routineId"=${id};
-    `);
-
-    return rows;
+    const { rows: routineActivities } = await client.query(`
+      SELECT * FROM routine_activities
+      WHERE "routineId"=${id}
+    `)
+    
+    return routineActivities;
   } catch (error) {
     console.log(error)
   }

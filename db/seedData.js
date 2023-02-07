@@ -1,4 +1,3 @@
-// require in the database adapter functions as you write them (createUser, createActivity...)
 const {
   createUser,
   createActivity,
@@ -11,7 +10,6 @@ const client = require("./client")
 
 async function dropTables() {
   console.log("Dropping All Tables...")
-  // drop all tables, in the correct order
   try {
     console.log("Starting to drop tables...");
 
@@ -30,7 +28,6 @@ async function dropTables() {
 }
 
 async function createTables() {
-  // create all tables, in the correct order
   try {
     console.log("Starting to build tables...");
 

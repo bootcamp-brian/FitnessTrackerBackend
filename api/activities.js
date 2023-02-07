@@ -65,7 +65,7 @@ activitiesRouter.patch('/:activityId', checkAuthorization, async (req, res, next
         const { ...fields } = req.body;
 
         const activityByName = await getActivityByName(fields.name);
-        console.log(activityByName)
+        
         if (activityByName) {
             next({
                 error: '400',
