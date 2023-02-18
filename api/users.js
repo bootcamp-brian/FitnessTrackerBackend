@@ -92,7 +92,7 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
       const { username } = req.params;
       const user = getUserByUsername(username);
       
-      if (!user) {
+      if (!user.username) {
         next({
           error: '404',
           name: 'UserNotFound Error',
