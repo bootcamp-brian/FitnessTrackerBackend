@@ -90,8 +90,15 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
       const prefix = 'Bearer ';
       const auth = req.header('Authorization');
       const { username } = req.params;
-    
-      if (!auth) {
+      const user = getUserByUsername(username);
+      
+      if (!user) {
+        next({
+          error: '404',
+          name: 'UserNotFound Error',
+          message: 'User not found'
+        })
+      } else if (!auth) {
         const routines = await getPublicRoutinesByUser({ username });
         res.send(routines);
       } else if (auth.startsWith(prefix)) {
@@ -108,12 +115,6 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
             const routines = await getPublicRoutinesByUser({ username });
             res.send(routines);
           }
-        } else {
-          next({
-            error: '404',
-            name: 'UserNotFound Error',
-            message: 'User not found'
-          })
         }
       }
     } catch ({ error, name, message }) {
