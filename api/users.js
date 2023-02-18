@@ -85,18 +85,39 @@ usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
 })
 
 // GET /api/users/:username/routines
-usersRouter.get('/:username/routines', checkAuthorization, async (req, res, next) => {
+usersRouter.get('/:username/routines', async (req, res, next) => {
     try {
-        const { username } = req.params;
-        if (username === req.user.username) {
+      const prefix = 'Bearer ';
+      const auth = req.header('Authorization');
+      const { username } = req.params;
+    
+      if (!auth) {
+        const routines = await getPublicRoutinesByUser({ username });
+        res.send(routines);
+      } else if (auth.startsWith(prefix)) {
+        const token = auth.slice(prefix.length);
+
+        const { id } = jwt.verify(token, JWT_SECRET);
+    
+        if (id) {
+          req.user = await getUserById(id);
+          if (username === req.user.username) {
             const routines = await getAllRoutinesByUser({ username });
             res.send(routines);
-        } else {
+          } else {
             const routines = await getPublicRoutinesByUser({ username });
             res.send(routines);
+          }
+        } else {
+          next({
+            error: '404',
+            name: 'UserNotFound Error',
+            message: 'User not found'
+          })
         }
+      }
     } catch ({ error, name, message }) {
-        next({ error, name, message })
+      next({ error, name, message })
     }
 })
 module.exports = usersRouter;
