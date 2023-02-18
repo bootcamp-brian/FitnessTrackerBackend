@@ -90,9 +90,9 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
       const prefix = 'Bearer ';
       const auth = req.header('Authorization');
       const { username } = req.params;
-      const user = getUserByUsername(username);
+      const user = await getUserByUsername(username);
       
-      if (!user.username) {
+      if (!user) {
         next({
           error: '404',
           name: 'UserNotFound Error',
